@@ -135,3 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _targetImage: {fileID: 8531570183953313911}
+  _availablePieces:
+  - {fileID: 11400000, guid: 717b315b09921b54497cc4993e936aa7, type: 2}
+  - {fileID: 11400000, guid: 93a8c0dc283346c49802e5c9fda6c3dd, type: 2}
+  - {fileID: 11400000, guid: b2f2143e904b7eb44be9047af3dcd4f8, type: 2}
