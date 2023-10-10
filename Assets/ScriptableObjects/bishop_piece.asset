@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PieceWhite: {fileID: 1641366066, guid: 83902631d736f944cbcb1857abd0a891, type: 3}
   PieceBlack: {fileID: -1887932271, guid: 83902631d736f944cbcb1857abd0a891, type: 3}
-  Type: 1
+  _type: 1

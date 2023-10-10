@@ -1,4 +1,5 @@
-﻿public static class GameState
+﻿public enum GameState
 {
-    public static int Turn;
+    PLACE_PIECES,
+    DYNAMIC
 }
