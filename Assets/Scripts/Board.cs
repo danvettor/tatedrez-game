@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Board
 {
-    public int[,] PiecesOnBoard { get; private set; }
-    public int[,] ColorOnBoard { get; private set; }
+    private int[,] PiecesOnBoard;
+    private int[,] ColorOnBoard;
 
     public int Size { get; private set; }
-
     public Action<Board> OnBoardUpdate;
     public Board()
     {
@@ -19,7 +18,7 @@ public class Board
 
     public void PlacePiece(Vector2Int pos, PieceType type, PlayerColor color)
     {
-        if(IsEmpty(pos.x,pos.y))
+        if (IsEmpty(pos.x, pos.y))
         {
             PiecesOnBoard[pos.x, pos.y] = (int)type;
             ColorOnBoard[pos.x, pos.y] = (int)color;
@@ -28,16 +27,14 @@ public class Board
         }
     }
 
+    public IPiece GetPiece(int x, int y)
+    {
+        var type = (PieceType) PiecesOnBoard[x, y];
+        var color = (PlayerColor) ColorOnBoard[x, y];
+        return PieceFactory.CreatePiece(type, color, new Vector2Int(x,y));
+    }
     public bool IsEmpty(int x, int y)
     {
         return PiecesOnBoard[x, y] == -1 && ColorOnBoard[x, y] == -1;
-    }
-    public List<Vector2> PossibleMoves(PieceType pieceType, Vector2 pos)
-    {
-        return null;
-    }
-    public bool HasWinner()
-    {
-        return false;
     }
 }

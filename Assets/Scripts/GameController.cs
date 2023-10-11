@@ -10,13 +10,13 @@ public class GameController
     Player _blackPlayer;
     Player _whitePlayer;
 
-    public GameController(Board board, BoardView boardView)
+    IPiece _currentPiece;
+    public GameController(Board board, BoardView boardView, List<PieceTemplate> availablePieces)
     {
         _board = board;
         _boardView = boardView;
         _whitePlayer = new Player(PlayerColor.WHITE);
         _blackPlayer = new Player(PlayerColor.BLACK);
-
     }
 
     public void StartNewGame()
@@ -29,24 +29,57 @@ public class GameController
     public void Play(Vector2Int pos)
     {
         //TODO: temporario antes de selecionar peça; obviamente vai dar erro quando acabarem as peças.
-        if (!_board.IsEmpty(pos.x, pos.y))
-            return;
 
         if (_currentState == GameState.PLACE_PIECES)
         {
-
+            if (!_board.IsEmpty(pos.x, pos.y))
+                return;
             var typeToPlay = (_colorTurn == PlayerColor.BLACK ? _blackPlayer : _whitePlayer).GetNextPiece();
             _board.PlacePiece(pos, typeToPlay, _colorTurn);
             if (!_whitePlayer.HasPiecesToPlace && !_blackPlayer.HasPiecesToPlace)
             {
                 _currentState = GameState.DYNAMIC;
             }
+            Turn();
         }
         else if (_currentState == GameState.DYNAMIC)
         {
-            Debug.Log("STATE CHANGE!!");
+            //TODO: Check if there any move for the currentPlayer
+            if(_currentPiece == null)
+            {
+                _currentPiece = _board.GetPiece(pos.x, pos.y);
+                if (_currentPiece == null)
+                    return;
+                if (_currentPiece.Color != _colorTurn)
+                {
+                    // SELECTING PIECE FROM OTHER PLAYER, NOTHING HAPPENS
+                    _currentPiece = null;
+                }
+            }
+            else
+            {
+                if(_currentPiece.IsValidMove(posToMove: pos))
+                {
+                    //board move piece
+                    //check for winner
+                    Debug.Log($"VALID MOVE FROM {_currentPiece.Color} {_currentPiece.Type}!!");
+                    _currentPiece = null;
+                    Turn();
+                }
+                else
+                {
+                    _currentPiece = null;
+                }
+            }
+            
         }
-        _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
     }
+
+    private void Turn()
+    {
+        _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
+        Debug.Log("TURN: "+ _colorTurn);
+    }
+
 
 }

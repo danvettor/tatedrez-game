@@ -15,11 +15,10 @@ public class BoardView : MonoBehaviour
         {
             for (int j = 0; j < board.Size; j++)
             {
-                var color = (PlayerColor)board.ColorOnBoard[i,j];
-                var type = (PieceType)board.PiecesOnBoard[i,j];
-                _boardTiles[tileIndexes].Draw(color, type);
+                var piece = board.GetPiece(i,j);
+                _boardTiles[tileIndexes].Draw(piece);
                 _boardTiles[tileIndexes].Pos = new Vector2Int(i, j);
-                _boardTiles[tileIndexes].OnTileCliked += (pos) => gameController.Play(pos);
+                _boardTiles[tileIndexes].OnTileCliked = (pos) => gameController.Play(pos);
                 tileIndexes++;
             }
         }
@@ -32,9 +31,8 @@ public class BoardView : MonoBehaviour
         {
             for (int j = 0; j < board.Size; j++)
             {
-                var color = (PlayerColor)board.ColorOnBoard[i, j];
-                var type = (PieceType)board.PiecesOnBoard[i, j];
-                _boardTiles[tileIndexes].Draw(color, type);
+                var piece = board.GetPiece(i, j);
+                _boardTiles[tileIndexes].Draw(piece);
                 tileIndexes++;
             }
         }

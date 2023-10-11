@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(fileName = "Piece", menuName = "ScriptableObjects/Piece")]
-public class Piece : ScriptableObject
+public class PieceTemplate : ScriptableObject
 {
     [SerializeField] private Sprite PieceWhite;
     [SerializeField] private Sprite PieceBlack;

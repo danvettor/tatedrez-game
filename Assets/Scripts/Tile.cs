@@ -8,9 +8,8 @@ using UnityEngine.UI;
 public class Tile : MonoBehaviour
 {
     [SerializeField] Image _targetImage;
-    [SerializeField] List<Piece> _availablePieces;
+    [SerializeField] List<PieceTemplate> _availablePieces;
 
-    private Button _button;
     public Vector2Int Pos;
     private Action<Vector2Int> _onTileClicked;
     public Action<Vector2Int> OnTileCliked
@@ -23,8 +22,14 @@ public class Tile : MonoBehaviour
         }
     }
 
-  
-    public void Draw(PlayerColor playerColor, PieceType pieceType)
+    public void Draw(IPiece piece)
+    {
+        if (piece == null)
+            return;
+        Draw(piece.Color, piece.Type);        
+    }
+
+    private void Draw(PlayerColor playerColor, PieceType pieceType)
     {
         if (playerColor == PlayerColor.EMPTY)
             return;
