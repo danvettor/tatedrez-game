@@ -3,13 +3,12 @@ using UnityEngine;
 public class GameController
 {
     private PlayerColor _colorTurn;
-
+    private GameState _currentState;
     private Board _board;
     private BoardView _boardView;
 
     Player _blackPlayer;
     Player _whitePlayer;
-    Dictionary<PlayerColor, Player> _players;
 
     public GameController(Board board, BoardView boardView)
     {
@@ -18,34 +17,36 @@ public class GameController
         _whitePlayer = new Player(PlayerColor.WHITE);
         _blackPlayer = new Player(PlayerColor.BLACK);
 
-        _players = new Dictionary<PlayerColor, Player>()
-        {
-            { PlayerColor.BLACK, _blackPlayer },
-            { PlayerColor.WHITE, _whitePlayer },
-        };
-
-        _colorTurn = PlayerColor.BLACK;
     }
 
     public void StartNewGame()
     {
+        _colorTurn = PlayerColor.BLACK;
+        _currentState = GameState.PLACE_PIECES;
         _boardView.CreateInitialBoard(_board, this);
     }
 
     public void Play(Vector2Int pos)
     {
-        Debug.Log($"PlayPos X:{pos.x} Y:{pos.y}");
         //TODO: temporario antes de selecionar peça; obviamente vai dar erro quando acabarem as peças.
-        var pieceToPlay = _players[_colorTurn].GetNextPiece();
-       
-        Play(pos, pieceToPlay, _colorTurn);
+        if (!_board.IsEmpty(pos.x, pos.y))
+            return;
+
+        if (_currentState == GameState.PLACE_PIECES)
+        {
+
+            var typeToPlay = (_colorTurn == PlayerColor.BLACK ? _blackPlayer : _whitePlayer).GetNextPiece();
+            _board.PlacePiece(pos, typeToPlay, _colorTurn);
+            if (!_whitePlayer.HasPiecesToPlace && !_blackPlayer.HasPiecesToPlace)
+            {
+                _currentState = GameState.DYNAMIC;
+            }
+        }
+        else if (_currentState == GameState.DYNAMIC)
+        {
+            Debug.Log("STATE CHANGE!!");
+        }
         _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
     }
-    private void Play(Vector2Int pos, PieceType type, PlayerColor color)
-    {
-        _board.PlacePiece(pos, type, color);
-    }
-
-
 
 }

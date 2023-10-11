@@ -19,11 +19,18 @@ public class Board
 
     public void PlacePiece(Vector2Int pos, PieceType type, PlayerColor color)
     {
-        //from - to
-        PiecesOnBoard[pos.x, pos.y] = (int)type;
-        ColorOnBoard[pos.x, pos.y] = (int)color;
+        if(IsEmpty(pos.x,pos.y))
+        {
+            PiecesOnBoard[pos.x, pos.y] = (int)type;
+            ColorOnBoard[pos.x, pos.y] = (int)color;
 
-        OnBoardUpdate?.Invoke(this);
+            OnBoardUpdate?.Invoke(this);
+        }
+    }
+
+    public bool IsEmpty(int x, int y)
+    {
+        return PiecesOnBoard[x, y] == -1 && ColorOnBoard[x, y] == -1;
     }
     public List<Vector2> PossibleMoves(PieceType pieceType, Vector2 pos)
     {

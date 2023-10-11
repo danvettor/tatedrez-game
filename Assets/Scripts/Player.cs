@@ -4,7 +4,7 @@ public class Player
 {
     PlayerColor _color;
     List<PieceType> _pieces;
-
+    public bool HasPiecesToPlace { get => _pieces.Count > 0; }
     public Player(PlayerColor color)
     {
         _color = color;
