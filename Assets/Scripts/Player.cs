@@ -11,11 +11,11 @@ public class Player
         _pieces = new List<PieceType>() { PieceType.KNIGHT, PieceType.BISHOP, PieceType.ROOK };
     }
 
-    public PieceType GetNextPiece()
-    {
-        var lastPieceIndex = _pieces.Count - 1;
-        var pieceType = _pieces[lastPieceIndex];
-        _pieces.RemoveAt(lastPieceIndex);
-        return pieceType;
-    }
+    //public PieceType GetNextPiece()
+    //{
+    //    var lastPieceIndex = _pieces.Count - 1;
+    //    var pieceType = _pieces[lastPieceIndex];
+    //    _pieces.RemoveAt(lastPieceIndex);
+    //    return pieceType;
+    //}
 }

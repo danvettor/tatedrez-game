@@ -8,6 +8,8 @@ public class Game : MonoBehaviour
     [SerializeField] BoardView _boardView;
     [SerializeField]
     List<PieceTemplate> _availablePieces;
+    [SerializeField] PiecesUI _blackUI;
+    [SerializeField] PiecesUI _whiteUI;
     private GameController _gameController;
     private void Awake()
     {
@@ -18,6 +20,10 @@ public class Game : MonoBehaviour
         _board = new Board();
         _gameController = new GameController(_board, _boardView, _availablePieces);
         _gameController.StartNewGame();
+        _blackUI.OnPieceSelected = (type) => _gameController.OnSelectedPiece(type, _blackUI.PlayerColor);
+        _whiteUI.OnPieceSelected = (type) => _gameController.OnSelectedPiece(type, _whiteUI.PlayerColor);
+
+        //onpiece placed faz algo. talvez juntas o Game com Game controller naquele esquema de Game Presenter
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 public class GameController
 {
@@ -11,6 +12,8 @@ public class GameController
     Player _whitePlayer;
 
     IPiece _currentPiece;
+
+ 
     public GameController(Board board, BoardView boardView, List<PieceTemplate> availablePieces)
     {
         _board = board;
@@ -26,6 +29,10 @@ public class GameController
         _boardView.CreateInitialBoard(_board, this);
     }
 
+    public void OnSelectedPiece(PieceType typeSelected, PlayerColor color)
+    {
+        _currentPiece = PieceFactory.CreatePiece(typeSelected,color, Vector2Int.one*-1);
+    }
     public void Play(Vector2Int pos)
     {
         //TODO: temporario antes de selecionar peça; obviamente vai dar erro quando acabarem as peças.
@@ -34,8 +41,9 @@ public class GameController
         {
             if (!_board.IsEmpty(pos.x, pos.y))
                 return;
-            var typeToPlay = (_colorTurn == PlayerColor.BLACK ? _blackPlayer : _whitePlayer).GetNextPiece();
-            _board.PlacePiece(pos, typeToPlay, _colorTurn);
+            if (_currentPiece == null)
+                return;
+            _board.PlacePiece(pos, _currentPiece.Type, _colorTurn);
             if (!_whitePlayer.HasPiecesToPlace && !_blackPlayer.HasPiecesToPlace)
             {
                 _currentState = GameState.DYNAMIC;

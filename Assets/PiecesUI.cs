@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +11,16 @@ public class PiecesUI : MonoBehaviour
     [SerializeField] private Button _bishop;
     [SerializeField] private Button _knight;
 
-    void Start()
+    public Action<PieceType> OnPieceSelected;
+    public PieceType SelectedPiece { get; private set; }
+
+    public PlayerColor PlayerColor { get { return _playerColor; } }
+    void Awake()
     {
-        
+        _rook.onClick.AddListener(() => SelectedPiece = PieceType.ROOK);
+        _knight.onClick.AddListener(() => SelectedPiece = PieceType.KNIGHT);
+        _bishop.onClick.AddListener(() => SelectedPiece = PieceType.BISHOP);
+
     }
 
 }
