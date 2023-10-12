@@ -14,6 +14,8 @@ public class GamePresenter : MonoBehaviour
 
     [SerializeField] GameObject _overlay;
 
+    private PlayerUI _currentActiveUI;
+
     private int _tieCounter;
 
     //gamecontroller
@@ -36,6 +38,7 @@ public class GamePresenter : MonoBehaviour
     {
         _colorTurn = PlayerColor.WHITE;
         _currentState = GameState.PLACE_PIECES;
+        _currentActiveUI = _whiteUI;
         _boardView.CreateInitialBoard(_board, onTileClicked: Play);
         _alertUI.OnTurn(_colorTurn);
     }
@@ -43,9 +46,14 @@ public class GamePresenter : MonoBehaviour
     public void OnSelectedPiece(PieceType typeSelected, PlayerColor color)
     {
         if (color == _colorTurn)
+        {
             _currentPiece = PieceFactory.CreatePiece(typeSelected, color, Vector2Int.one * -1);
+            _currentActiveUI.HighlightUI(_currentPiece.Type);
+        }
         else
+        {
             ResetPieceSelection();
+        }
     }
     public void Play(Vector2Int pos)
     {
@@ -56,7 +64,7 @@ public class GamePresenter : MonoBehaviour
             if (_currentPiece == null)
                 return;
             _board.PlacePiece(pos, _currentPiece.Type, _colorTurn);
-            (_colorTurn == PlayerColor.BLACK ? _blackUI : _whiteUI).OnPiecePlaced(_currentPiece.Type);
+            _currentActiveUI.OnPiecePlaced(_currentPiece.Type);
             if (!_blackUI.HasPieceToPlace && !_whiteUI.HasPieceToPlace)
             {
                 _currentState = GameState.DYNAMIC;
@@ -109,6 +117,7 @@ public class GamePresenter : MonoBehaviour
 
     private void ResetPieceSelection()
     {
+        _currentActiveUI.DeselectUI();
         _boardView.DeselectTile();
         _currentPiece = null;
     }
@@ -142,7 +151,7 @@ public class GamePresenter : MonoBehaviour
         else
         {
             _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
-
+            _currentActiveUI = _colorTurn == PlayerColor.BLACK ? _blackUI : _whiteUI;
             _alertUI.OnTurn(_colorTurn);
             Debug.Log("TURN: " + _colorTurn);
         }

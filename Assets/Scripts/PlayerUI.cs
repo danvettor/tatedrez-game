@@ -27,14 +27,34 @@ public class PlayerUI : MonoBehaviour
             {PieceType.KNIGHT, _knight},
         };
 
-        _rook.onClick.AddListener(() => OnButtonClick( PieceType.ROOK));
-        _knight.onClick.AddListener(() => OnButtonClick(PieceType.KNIGHT));
-        _bishop.onClick.AddListener(() => OnButtonClick(PieceType.BISHOP));
+        _rook.onClick.AddListener(() => {
+            OnButtonClick(PieceType.ROOK);
+        });
+        _knight.onClick.AddListener(() => {
+            OnButtonClick(PieceType.KNIGHT);
+        });
+        _bishop.onClick.AddListener(() => {
+            OnButtonClick(PieceType.BISHOP);
+        });
+    }
+    public void HighlightUI(PieceType choosenPiece)
+    {
+        foreach (var piece in _buttonByType)
+        {
+            _buttonByType[piece.Key].image.color = piece.Key == choosenPiece ? Color.red : Color.white;
+        }
     }
 
+    public void DeselectUI()
+    {
+        foreach (var piece in _buttonByType)
+        {
+            _buttonByType[piece.Key].image.color =  Color.white;
+        }
+    }
     public void OnPiecePlaced(PieceType typePlaced)
     {
-        _buttonByType[typePlaced].gameObject.SetActive(false);
+        _buttonByType[typePlaced].transform.parent.gameObject.SetActive(false);
         _buttonByType.Remove(typePlaced);
         _placedPiecesCount++;
     }
