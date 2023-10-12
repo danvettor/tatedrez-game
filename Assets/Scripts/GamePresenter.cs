@@ -60,6 +60,7 @@ public class GamePresenter : MonoBehaviour
                 _currentState = GameState.DYNAMIC;
                 ResetPieceSelection();
             }
+            ResetPieceSelection();
             Turn();
         }
         else if (_currentState == GameState.DYNAMIC)
