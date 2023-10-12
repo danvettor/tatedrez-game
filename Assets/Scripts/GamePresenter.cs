@@ -1,42 +1,50 @@
-﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-public class GameController
+
+public class GamePresenter : MonoBehaviour
 {
+    private Board _board;
+    [SerializeField] BoardView _boardView;
+    [SerializeField] PlayerUI _blackUI;
+    [SerializeField] PlayerUI _whiteUI;
+
+    [SerializeField] TMP_Text _turnHUD;
+
+    //gamecontroller
     private PlayerColor _colorTurn;
     private GameState _currentState;
-    private Board _board;
-    private BoardView _boardView;
-
-    Player _blackPlayer;
-    Player _whitePlayer;
+ 
 
     IPiece _currentPiece;
 
- 
-    public GameController(Board board, BoardView boardView, List<PieceTemplate> availablePieces)
+    private void Awake()
     {
-        _board = board;
-        _boardView = boardView;
-        _whitePlayer = new Player(PlayerColor.WHITE);
-        _blackPlayer = new Player(PlayerColor.BLACK);
-    }
+        _board = new Board();
 
-    public void StartNewGame()
+        _blackUI.OnPieceSelected = (type) => OnSelectedPiece(type, _blackUI.PlayerColor);
+        _whiteUI.OnPieceSelected = (type) => OnSelectedPiece(type, _whiteUI.PlayerColor);
+
+        StartNewGame();
+    }
+    private void StartNewGame()
     {
-        _colorTurn = PlayerColor.BLACK;
+        _colorTurn = PlayerColor.WHITE;
+        _turnHUD.text = "TURN: " + _colorTurn;
         _currentState = GameState.PLACE_PIECES;
-        _boardView.CreateInitialBoard(_board, this);
+        _boardView.CreateInitialBoard(_board, onTileClicked: Play);
     }
 
     public void OnSelectedPiece(PieceType typeSelected, PlayerColor color)
     {
-        _currentPiece = PieceFactory.CreatePiece(typeSelected,color, Vector2Int.one*-1);
+        if (color == _colorTurn)
+            _currentPiece = PieceFactory.CreatePiece(typeSelected, color, Vector2Int.one * -1);
+        else
+            ResetPieceSelection();
     }
     public void Play(Vector2Int pos)
     {
-        //TODO: temporario antes de selecionar peça; obviamente vai dar erro quando acabarem as peças.
-
         if (_currentState == GameState.PLACE_PIECES)
         {
             if (!_board.IsEmpty(pos.x, pos.y))
@@ -44,7 +52,10 @@ public class GameController
             if (_currentPiece == null)
                 return;
             _board.PlacePiece(pos, _currentPiece.Type, _colorTurn);
-            if (!_whitePlayer.HasPiecesToPlace && !_blackPlayer.HasPiecesToPlace)
+            (_colorTurn == PlayerColor.BLACK ? _blackUI : _whiteUI).OnPiecePlaced(_currentPiece.Type);
+           
+            
+            if (!_blackUI.HasPieceToPlace && !_whiteUI.HasPieceToPlace)
             {
                 _currentState = GameState.DYNAMIC;
             }
@@ -52,7 +63,7 @@ public class GameController
         }
         else if (_currentState == GameState.DYNAMIC)
         {
-            
+
             //TODO: Check if there any move for the currentPlayer
             if (_currentPiece == null)
             {
@@ -62,13 +73,13 @@ public class GameController
 
                 if (_currentPiece.Color == _colorTurn)
                     _boardView.HighlightTile(_currentPiece.Pos);
-                else 
+                else
                     ResetPieceSelection();
 
             }
             else
             {
-                if(IsValidMove(from: _currentPiece.Pos, to: pos))
+                if (IsValidMove(from: _currentPiece.Pos, to: pos))
                 {
                     //check for winner
                     _board.MovePiece(_currentPiece, pos);
@@ -107,8 +118,11 @@ public class GameController
             //endgame
         }
         _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
+        _turnHUD.text = _turnHUD.text + _colorTurn;
+
+        _turnHUD.text = "TURN: " + _colorTurn;
+
         Debug.Log("TURN: " + _colorTurn);
     }
-
 
 }

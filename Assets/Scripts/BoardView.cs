@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class BoardView : MonoBehaviour
     [SerializeField] List<Image> _tileHighlights;
 
     Image _highlightedTile;
-    public void CreateInitialBoard(Board board, GameController gameController)
+    public void CreateInitialBoard(Board board, Action<Vector2Int> onTileClicked)
     {
         board.OnBoardUpdate = UpdateBoard;
         var tileIndexes = 0;
@@ -20,7 +21,7 @@ public class BoardView : MonoBehaviour
                 var piece = board.GetPiece(i,j);
                 _boardTiles[tileIndexes].Draw(piece);
                 _boardTiles[tileIndexes].Pos = new Vector2Int(i, j);
-                _boardTiles[tileIndexes].OnTileCliked = (pos) => gameController.Play(pos);
+                _boardTiles[tileIndexes].OnTileCliked = onTileClicked;
                 tileIndexes++;
             }
         }
