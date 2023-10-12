@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public interface IPiece
 {
@@ -7,5 +8,6 @@ public interface IPiece
      Vector2Int Pos { get;  set; }
 
      bool IsValidMove(Vector2Int posToMove);
-  
+    List<Vector2Int> AllPossibleMoves();
+
 }

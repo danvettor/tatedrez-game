@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BishopPiece : IPiece
+public class BishopPiece : Piece
 {
     public BishopPiece(PieceType type, PlayerColor color, Vector2Int pos)
     {
@@ -11,11 +11,7 @@ public class BishopPiece : IPiece
         Color = color;
         Pos = pos;
     }
-
-    public PieceType Type { get; set; }
-    public PlayerColor Color { get; set; }
-    public Vector2Int Pos { get; set; }
-    public  bool IsValidMove(Vector2Int posToMove)
+    public override bool IsValidMove(Vector2Int posToMove)
     {
         return Math.Abs(posToMove.x - Pos.x) == Math.Abs(posToMove.y - Pos.y);
     }

@@ -63,6 +63,12 @@ public class GamePresenter : MonoBehaviour
         else if (_currentState == GameState.DYNAMIC)
         {
             //TODO: Check if there any move for the currentPlayer
+            if (!_board.HasValidMove(_colorTurn))
+            {
+                Turn();
+                return;
+            }
+
             if (_currentPiece == null)
             {
                 _currentPiece = _board.GetPiece(pos.x, pos.y);
@@ -106,6 +112,7 @@ public class GamePresenter : MonoBehaviour
                 !_board.HasPieceInBetween(from, to) &&
                 _currentPiece.IsValidMove(to);
     }
+
     private void Turn()
     {
         var (hasWinner, winnerColor) = _board.HasWinner();
