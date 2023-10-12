@@ -36,6 +36,25 @@ public class Board
 
         OnBoardUpdate?.Invoke(this);
     }
+
+    public bool HasPieceInBetween(Vector2Int from, Vector2Int to)
+    {
+        // check for piece next do another (nothing in between obviously)
+        if (Mathf.FloorToInt((to - from).magnitude) == 1) 
+            return false;
+
+        var xDist = Math.Abs(to.x - from.x);
+        var yDist = Math.Abs(to.y - from.y);
+
+        if (xDist == 2 && yDist == 2) //check for central piece
+            return PiecesOnBoard[1, 1] != -1;
+        if (to.x == from.x) // checking row to allow vertical move
+            return !(PiecesOnBoard[1, 0] == -1 || PiecesOnBoard[1, 1] == -1 || PiecesOnBoard[1, 2] == -1);
+        if (to.y == from.y) // checking column to allow horizontal move
+            return !(PiecesOnBoard[0, 1] == -1 || PiecesOnBoard[1, 1] == -1 || PiecesOnBoard[2, 1] == -1);
+       
+        return false;
+    }
     public IPiece GetPiece(int x, int y)
     {
         var type = (PieceType) PiecesOnBoard[x, y];

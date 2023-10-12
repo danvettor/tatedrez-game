@@ -45,7 +45,7 @@ public class GameController
         else if (_currentState == GameState.DYNAMIC)
         {
             //TODO: Check if there any move for the currentPlayer
-            if(_currentPiece == null)
+            if (_currentPiece == null)
             {
                 _currentPiece = _board.GetPiece(pos.x, pos.y);
                 if (_currentPiece == null)
@@ -58,7 +58,7 @@ public class GameController
             }
             else
             {
-                if(_board.IsEmpty(pos.x,pos.y) && _currentPiece.IsValidMove(posToMove: pos))
+                if(IsValidMove(from: _currentPiece.Pos, to: pos))
                 {
                     //check for winner
                     _board.MovePiece(_currentPiece, pos);
@@ -71,14 +71,20 @@ public class GameController
                     _currentPiece = null;
                 }
             }
-            
+
         }
     }
 
+    private bool IsValidMove(Vector2Int from, Vector2Int to)
+    {
+        return  _board.IsEmpty(to.x, to.y) &&
+                _board.HasPieceInBetween(from, to) &&
+                _currentPiece.IsValidMove(to);
+    }
     private void Turn()
     {
         _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
-        Debug.Log("TURN: "+ _colorTurn);
+        Debug.Log("TURN: " + _colorTurn);
     }
 
 
