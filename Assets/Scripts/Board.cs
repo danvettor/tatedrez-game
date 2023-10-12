@@ -48,9 +48,9 @@ public class Board
 
         if (xDist == 2 && yDist == 2) //check for central piece
             return PiecesOnBoard[1, 1] != -1;
-        if (to.x == from.x) // checking row to allow vertical move
+        if (to.y == from.y) // checking row to allow vertical move
             return !(PiecesOnBoard[1, 0] == -1 || PiecesOnBoard[1, 1] == -1 || PiecesOnBoard[1, 2] == -1);
-        if (to.y == from.y) // checking column to allow horizontal move
+        if (to.x == from.x) // checking column to allow horizontal move
             return !(PiecesOnBoard[0, 1] == -1 || PiecesOnBoard[1, 1] == -1 || PiecesOnBoard[2, 1] == -1);
        
         return false;

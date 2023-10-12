@@ -77,8 +77,8 @@ public class GameController
 
     private bool IsValidMove(Vector2Int from, Vector2Int to)
     {
-        return  _board.IsEmpty(to.x, to.y) &&
-                _board.HasPieceInBetween(from, to) &&
+        return _board.IsEmpty(to.x, to.y) &&
+                !_board.HasPieceInBetween(from, to) &&
                 _currentPiece.IsValidMove(to);
     }
     private void Turn()
