@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GamePresenter : MonoBehaviour
 {
@@ -123,6 +124,8 @@ public class GamePresenter : MonoBehaviour
             _board.ClearBoardForWinner( winnerColor);
             _alertUI.OnEndGame(winnerColor);
             _overlay.SetActive(true);
+
+            Invoke("OnGameEnded",3.0f);
         }
         else
         {
@@ -132,6 +135,11 @@ public class GamePresenter : MonoBehaviour
             Debug.Log("TURN: " + _colorTurn);
         }
        
+    }
+
+    private void OnGameEnded()
+    {
+        SceneManager.LoadScene("Menu");
     }
 
 }
