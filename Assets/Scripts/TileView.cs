@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class Tile : MonoBehaviour
+public class TileView : MonoBehaviour
 {
     [SerializeField] Image _targetImage;
     [SerializeField] List<PieceTemplate> _availablePieces;
