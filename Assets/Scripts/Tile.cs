@@ -25,17 +25,13 @@ public class Tile : MonoBehaviour
     public void Draw(IPiece piece)
     {
         if (piece == null)
+        {
+            _targetImage.sprite = null;
             return;
-        Draw(piece.Color, piece.Type);        
+        }
+       
+        var pieceTemplate = _availablePieces.Find((p) => p.Type == piece.Type);
+        _targetImage.sprite = pieceTemplate.GetSprite(piece.Color);
     }
-
-    private void Draw(PlayerColor playerColor, PieceType pieceType)
-    {
-        if (playerColor == PlayerColor.EMPTY)
-            return;
-        var piece = _availablePieces.Find((p) => p.Type == pieceType);
-        _targetImage.sprite = piece.GetSprite(playerColor);
-    }
-
 
 }

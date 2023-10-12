@@ -27,6 +27,15 @@ public class Board
         }
     }
 
+    public void MovePiece(IPiece piece, Vector2Int to)
+    {
+        PiecesOnBoard[piece.Pos.x, piece.Pos.y] = -1;
+        PiecesOnBoard[to.x, to.y] = (int) piece.Type;
+        ColorOnBoard[piece.Pos.x, piece.Pos.y] = -1;
+        ColorOnBoard[to.x, to.y] = (int)piece.Color;
+
+        OnBoardUpdate?.Invoke(this);
+    }
     public IPiece GetPiece(int x, int y)
     {
         var type = (PieceType) PiecesOnBoard[x, y];

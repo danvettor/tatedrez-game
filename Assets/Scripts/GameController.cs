@@ -58,10 +58,10 @@ public class GameController
             }
             else
             {
-                if(_currentPiece.IsValidMove(posToMove: pos))
+                if(_board.IsEmpty(pos.x,pos.y) && _currentPiece.IsValidMove(posToMove: pos))
                 {
-                    //board move piece
                     //check for winner
+                    _board.MovePiece(_currentPiece, pos);
                     Debug.Log($"VALID MOVE FROM {_currentPiece.Color} {_currentPiece.Type}!!");
                     _currentPiece = null;
                     Turn();
