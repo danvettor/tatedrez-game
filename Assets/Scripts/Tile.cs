@@ -27,10 +27,12 @@ public class Tile : MonoBehaviour
         if (piece == null)
         {
             _targetImage.sprite = null;
+            _targetImage.color = Color.clear;
             return;
         }
        
         var pieceTemplate = _availablePieces.Find((p) => p.Type == piece.Type);
+        _targetImage.color = Color.white;
         _targetImage.sprite = pieceTemplate.GetSprite(piece.Color);
     }
 

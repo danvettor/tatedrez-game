@@ -50,11 +50,12 @@ public class GameController
                 _currentPiece = _board.GetPiece(pos.x, pos.y);
                 if (_currentPiece == null)
                     return;
-                if (_currentPiece.Color != _colorTurn)
-                {
-                    // SELECTING PIECE FROM OTHER PLAYER, NOTHING HAPPENS
-                    _currentPiece = null;
-                }
+
+                if (_currentPiece.Color == _colorTurn)
+                    _boardView.HighlightTile(_currentPiece.Pos);
+                else 
+                    ResetPieceSelection();
+
             }
             else
             {
@@ -63,18 +64,24 @@ public class GameController
                     //check for winner
                     _board.MovePiece(_currentPiece, pos);
                     Debug.Log($"VALID MOVE FROM {_currentPiece.Color} {_currentPiece.Type}!!");
-                    _currentPiece = null;
+                    ResetPieceSelection();
                     Turn();
                 }
                 else
                 {
-                    _currentPiece = null;
+                    ResetPieceSelection();
                 }
             }
 
         }
     }
 
+    private void ResetPieceSelection()
+    {
+        _boardView.DeselectTile();
+        _currentPiece = null;
+
+    }
     private bool IsValidMove(Vector2Int from, Vector2Int to)
     {
         return _board.IsEmpty(to.x, to.y) &&

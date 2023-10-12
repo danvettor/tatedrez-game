@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class BoardView : MonoBehaviour
 {
     [SerializeField] List<Tile> _boardTiles;
+    [SerializeField] List<Image> _tileHighlights;
 
+    Image _highlightedTile;
     public void CreateInitialBoard(Board board, GameController gameController)
     {
         board.OnBoardUpdate = UpdateBoard;
@@ -21,6 +23,38 @@ public class BoardView : MonoBehaviour
                 _boardTiles[tileIndexes].OnTileCliked = (pos) => gameController.Play(pos);
                 tileIndexes++;
             }
+        }
+    }
+    public void HighlightTile(Vector2Int pos)
+    {
+        var index = 0;
+        bool exitLoop = false;
+        for (int i = 0; i < 3 ; i++)
+        {
+            if (exitLoop)
+                break;
+            for (int j = 0; j <3; j++)
+            {
+                if (i == pos.x && j == pos.y)
+                {
+                    exitLoop = true;
+                    break;
+                }
+                index++;
+
+            }
+        }
+        Debug.Log($"Index {index} pos{ pos.x} {pos.y}");
+        _highlightedTile = _tileHighlights[index];
+        _highlightedTile.color = Color.red;
+    }
+
+    public void DeselectTile()
+    {
+        if(_highlightedTile != null)
+        {
+            _highlightedTile.color = Color.clear;
+            _highlightedTile = null;
         }
     }
 
