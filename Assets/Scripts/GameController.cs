@@ -44,6 +44,7 @@ public class GameController
         }
         else if (_currentState == GameState.DYNAMIC)
         {
+            
             //TODO: Check if there any move for the currentPlayer
             if (_currentPiece == null)
             {
@@ -90,6 +91,13 @@ public class GameController
     }
     private void Turn()
     {
+        var (hasWinner, winnerColor) = _board.HasWinner();
+
+        if (hasWinner)
+        {
+            Debug.Log($"Winner is {winnerColor}");
+            //endgame
+        }
         _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
         Debug.Log("TURN: " + _colorTurn);
     }

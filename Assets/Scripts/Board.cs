@@ -65,4 +65,40 @@ public class Board
     {
         return PiecesOnBoard[x, y] == -1 && ColorOnBoard[x, y] == -1;
     }
+
+    public (bool, PlayerColor) HasWinner()
+    {
+        for (int i = 0; i < Size ; i++)
+        {
+            if (ColorOnBoard[i, 0] == ColorOnBoard[i, 1] &&
+                ColorOnBoard[i, 1] == ColorOnBoard[i, 2] && 
+                ColorOnBoard[i, 0] != -1)
+            {
+                var winnerColor = (PlayerColor)ColorOnBoard[i, 0];
+                return (true, winnerColor); 
+            }
+        }
+        for (int j = 0; j < Size; j++)
+        {
+            if (ColorOnBoard[0,j] == ColorOnBoard[1,j] &&
+                ColorOnBoard[1,j] == ColorOnBoard[2,j] &&
+                ColorOnBoard[0,j] != -1)
+            {
+                var winnerColor = (PlayerColor)ColorOnBoard[j, 0];
+                return (true, winnerColor);
+            }
+        }
+
+        for (int j = 0; j < Size; j++)
+        {
+            if (ColorOnBoard[0, 0] == ColorOnBoard[1, 1]  &&
+                ColorOnBoard[1, 1] == ColorOnBoard[2, 2] &&
+                ColorOnBoard[1,1] != -1)
+            {
+                var winnerColor = (PlayerColor)ColorOnBoard[1, 1];
+                return (true, winnerColor);
+            }
+        }
+        return (false, PlayerColor.EMPTY);
+    }
 }
