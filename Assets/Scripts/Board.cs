@@ -101,4 +101,22 @@ public class Board
         }
         return (false, PlayerColor.EMPTY);
     }
+
+    public void ClearBoardForWinner(PlayerColor winnerColor)
+    {
+        int winner = (int) winnerColor;
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j < Size; j++)
+            {
+                if(ColorOnBoard[i, j] != winner)
+                {
+                    ColorOnBoard[i, j] = -1;
+                    PiecesOnBoard[i, j] = -1;
+                }
+            }
+        }
+
+        OnBoardUpdate?.Invoke(this);
+    }
 }

@@ -15,7 +15,7 @@ public class GamePresenter : MonoBehaviour
     //gamecontroller
     private PlayerColor _colorTurn;
     private GameState _currentState;
- 
+
 
     IPiece _currentPiece;
 
@@ -53,17 +53,15 @@ public class GamePresenter : MonoBehaviour
                 return;
             _board.PlacePiece(pos, _currentPiece.Type, _colorTurn);
             (_colorTurn == PlayerColor.BLACK ? _blackUI : _whiteUI).OnPiecePlaced(_currentPiece.Type);
-           
-            
             if (!_blackUI.HasPieceToPlace && !_whiteUI.HasPieceToPlace)
             {
                 _currentState = GameState.DYNAMIC;
+                ResetPieceSelection();
             }
             Turn();
         }
         else if (_currentState == GameState.DYNAMIC)
         {
-
             //TODO: Check if there any move for the currentPlayer
             if (_currentPiece == null)
             {
@@ -115,6 +113,7 @@ public class GamePresenter : MonoBehaviour
         if (hasWinner)
         {
             Debug.Log($"Winner is {winnerColor}");
+            _board.ClearBoardForWinner( winnerColor);
             //endgame
         }
         _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
