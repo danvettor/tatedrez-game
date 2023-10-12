@@ -14,6 +14,8 @@ public class GamePresenter : MonoBehaviour
 
     [SerializeField] GameObject _overlay;
 
+    private int _tieCounter;
+
     //gamecontroller
     private PlayerColor _colorTurn;
     private GameState _currentState;
@@ -68,9 +70,11 @@ public class GamePresenter : MonoBehaviour
             //TODO: Check if there any move for the currentPlayer
             if (!_board.HasValidMove(_colorTurn))
             {
+                _tieCounter++;
                 Turn();
                 return;
             }
+            _tieCounter = 0;
 
             if (_currentPiece == null)
             {
@@ -117,6 +121,13 @@ public class GamePresenter : MonoBehaviour
 
     private void Turn()
     {
+        if (_tieCounter == 2)
+        {
+            _alertUI.OnTiedGame();
+            _overlay.SetActive(true);
+
+            Invoke("OnGameEnded", 3.0f);
+        }
         var (hasWinner, winnerColor) = _board.HasWinner();
 
         if (hasWinner)

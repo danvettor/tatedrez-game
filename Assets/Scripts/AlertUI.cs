@@ -36,8 +36,16 @@ public class AlertUI : MonoBehaviour
     public void OnEndGame(PlayerColor winnerColor)
     {
         _blackKing.SetActive(winnerColor == PlayerColor.BLACK);
-        _blackKing.SetActive(winnerColor == PlayerColor.WHITE);
+        _whiteKing.SetActive(winnerColor == PlayerColor.WHITE);
         _alertText.text = winnerColor + " WIN";
+        _animator.SetTrigger("PopIn");
+    }
+
+    internal void OnTiedGame()
+    {
+        _blackKing.SetActive(false);
+        _whiteKing.SetActive(false);
+        _alertText.text =  "TIE";
         _animator.SetTrigger("PopIn");
     }
 }
