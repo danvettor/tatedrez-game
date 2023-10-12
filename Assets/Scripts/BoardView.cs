@@ -8,6 +8,7 @@ public class BoardView : MonoBehaviour
 {
     [SerializeField] List<Tile> _boardTiles;
     [SerializeField] List<Image> _tileHighlights;
+    [SerializeField] List<Image> _possibleMovesHighlight;
 
     Image _highlightedTile;
     public void CreateInitialBoard(Board board, Action<Vector2Int> onTileClicked)
@@ -26,6 +27,36 @@ public class BoardView : MonoBehaviour
             }
         }
     }
+
+    public void HighlightPossibleMoves(List<Vector2Int> positions)
+    {
+        var index = 0;
+        DeselectMoveHighlights();
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                foreach(var pos in positions)
+                {
+                    if (i == pos.x && j == pos.y)
+                    {
+                        _possibleMovesHighlight[index].color = Color.green;
+                    }
+                }
+                
+                index++;
+
+            }
+        }
+    }
+    public void DeselectMoveHighlights()
+    {
+        foreach (var tile in _possibleMovesHighlight)
+        {
+            tile.color = Color.clear;
+        }
+    }
+
     public void HighlightTile(Vector2Int pos)
     {
         var index = 0;

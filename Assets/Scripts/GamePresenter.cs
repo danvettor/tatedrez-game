@@ -91,7 +91,11 @@ public class GamePresenter : MonoBehaviour
                     return;
 
                 if (_currentPiece.Color == _colorTurn)
+                {
+                    var validMoves = _board.ValidMoves(_currentPiece);
+                    _boardView.HighlightPossibleMoves(validMoves);
                     _boardView.HighlightTile(_currentPiece.Pos);
+                }
                 else
                     ResetPieceSelection();
 
@@ -118,6 +122,7 @@ public class GamePresenter : MonoBehaviour
     private void ResetPieceSelection()
     {
         _currentActiveUI.DeselectUI();
+        _boardView.DeselectMoveHighlights();
         _boardView.DeselectTile();
         _currentPiece = null;
     }

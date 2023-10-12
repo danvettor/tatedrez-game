@@ -30,7 +30,7 @@ public class Board
     public void MovePiece(IPiece piece, Vector2Int to)
     {
         PiecesOnBoard[piece.Pos.x, piece.Pos.y] = -1;
-        PiecesOnBoard[to.x, to.y] = (int) piece.Type;
+        PiecesOnBoard[to.x, to.y] = (int)piece.Type;
         ColorOnBoard[piece.Pos.x, piece.Pos.y] = -1;
         ColorOnBoard[to.x, to.y] = (int)piece.Color;
 
@@ -40,7 +40,7 @@ public class Board
     public bool HasPieceInBetween(Vector2Int from, Vector2Int to)
     {
         // check for piece next do another (nothing in between obviously)
-        if (Mathf.FloorToInt((to - from).magnitude) == 1) 
+        if (Mathf.FloorToInt((to - from).magnitude) == 1)
             return false;
 
         var xDist = Math.Abs(to.x - from.x);
@@ -52,14 +52,14 @@ public class Board
             return !(PiecesOnBoard[1, 0] == -1 || PiecesOnBoard[1, 1] == -1 || PiecesOnBoard[1, 2] == -1);
         if (to.x == from.x) // checking column to allow horizontal move
             return !(PiecesOnBoard[0, 1] == -1 || PiecesOnBoard[1, 1] == -1 || PiecesOnBoard[2, 1] == -1);
-       
+
         return false;
     }
     public IPiece GetPiece(int x, int y)
     {
-        var type = (PieceType) PiecesOnBoard[x, y];
-        var color = (PlayerColor) ColorOnBoard[x, y];
-        return PieceFactory.CreatePiece(type, color, new Vector2Int(x,y));
+        var type = (PieceType)PiecesOnBoard[x, y];
+        var color = (PlayerColor)ColorOnBoard[x, y];
+        return PieceFactory.CreatePiece(type, color, new Vector2Int(x, y));
     }
     public bool IsEmpty(int x, int y)
     {
@@ -69,22 +69,22 @@ public class Board
     public (bool, PlayerColor) HasWinner()
     {
         // check rows
-        for (int i = 0; i < Size ; i++)
+        for (int i = 0; i < Size; i++)
         {
             if (ColorOnBoard[i, 0] == ColorOnBoard[i, 1] &&
-                ColorOnBoard[i, 1] == ColorOnBoard[i, 2] && 
+                ColorOnBoard[i, 1] == ColorOnBoard[i, 2] &&
                 ColorOnBoard[i, 0] != -1)
             {
                 var winnerColor = (PlayerColor)ColorOnBoard[i, 0];
-                return (true, winnerColor); 
+                return (true, winnerColor);
             }
         }
         //check columns
         for (int j = 0; j < Size; j++)
         {
-            if (ColorOnBoard[0,j] == ColorOnBoard[1,j] &&
-                ColorOnBoard[1,j] == ColorOnBoard[2,j] &&
-                ColorOnBoard[0,j] != -1)
+            if (ColorOnBoard[0, j] == ColorOnBoard[1, j] &&
+                ColorOnBoard[1, j] == ColorOnBoard[2, j] &&
+                ColorOnBoard[0, j] != -1)
             {
                 var winnerColor = (PlayerColor)ColorOnBoard[j, 0];
                 return (true, winnerColor);
@@ -94,9 +94,9 @@ public class Board
         //check diagonal
         for (int k = 0; k < Size; k++)
         {
-            if (ColorOnBoard[0, 0] == ColorOnBoard[1, 1]  &&
+            if (ColorOnBoard[0, 0] == ColorOnBoard[1, 1] &&
                 ColorOnBoard[1, 1] == ColorOnBoard[2, 2] &&
-                ColorOnBoard[1,1] != -1)
+                ColorOnBoard[1, 1] != -1)
             {
                 var winnerColor = (PlayerColor)ColorOnBoard[1, 1];
                 return (true, winnerColor);
@@ -104,23 +104,41 @@ public class Board
         }
         return (false, PlayerColor.EMPTY);
     }
+    public List<Vector2Int> ValidMoves(IPiece piece)
+    {
+        var possibleMoves = piece.AllPossibleMoves();
+        var filteredPossibleMoves = new List<Vector2Int>();
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j < Size; j++)
+            {
+                foreach (var move in possibleMoves)
+                {
+                    var isValid = IsEmpty(move.x, move.y) &&
+                        !HasPieceInBetween(new Vector2Int(i, j), move);
 
+                    if (isValid)
+                        filteredPossibleMoves.Add(move);
+                }
+            }
+        }
+        return filteredPossibleMoves;
+    }
     public bool HasValidMove(PlayerColor color)
     {
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
-            { 
-                if(ColorOnBoard[i,j] == (int)color)
+            {
+                if (ColorOnBoard[i, j] == (int)color)
                 {
                     var type = (PieceType)PiecesOnBoard[i, j];
-                    var piece = PieceFactory.CreatePiece(type,color,new Vector2Int(i,j));
+                    var piece = PieceFactory.CreatePiece(type, color, new Vector2Int(i, j));
                     var possibleMoves = piece.AllPossibleMoves();
-                    //Didnt find any moves for this piece
 
                     foreach (var move in possibleMoves)
                     {
-                        var isValid = IsEmpty(move.x, move.y) && 
+                        var isValid = IsEmpty(move.x, move.y) &&
                             !HasPieceInBetween(new Vector2Int(i, j), move);
 
                         if (isValid)
@@ -135,12 +153,12 @@ public class Board
 
     public void ClearBoardForWinner(PlayerColor winnerColor)
     {
-        int winner = (int) winnerColor;
+        int winner = (int)winnerColor;
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
             {
-                if(ColorOnBoard[i, j] != winner)
+                if (ColorOnBoard[i, j] != winner)
                 {
                     ColorOnBoard[i, j] = -1;
                     PiecesOnBoard[i, j] = -1;
