@@ -9,8 +9,9 @@ public class GamePresenter : MonoBehaviour
     [SerializeField] BoardView _boardView;
     [SerializeField] PlayerUI _blackUI;
     [SerializeField] PlayerUI _whiteUI;
+    [SerializeField] AlertUI _alertUI;
 
-    [SerializeField] TMP_Text _turnHUD;
+    [SerializeField] GameObject _overlay;
 
     //gamecontroller
     private PlayerColor _colorTurn;
@@ -31,9 +32,9 @@ public class GamePresenter : MonoBehaviour
     private void StartNewGame()
     {
         _colorTurn = PlayerColor.WHITE;
-        _turnHUD.text = "TURN: " + _colorTurn;
         _currentState = GameState.PLACE_PIECES;
         _boardView.CreateInitialBoard(_board, onTileClicked: Play);
+        _alertUI.OnTurn(_colorTurn);
     }
 
     public void OnSelectedPiece(PieceType typeSelected, PlayerColor color)
@@ -104,7 +105,6 @@ public class GamePresenter : MonoBehaviour
     {
         _boardView.DeselectTile();
         _currentPiece = null;
-
     }
     private bool IsValidMove(Vector2Int from, Vector2Int to)
     {
@@ -121,14 +121,17 @@ public class GamePresenter : MonoBehaviour
         {
             Debug.Log($"Winner is {winnerColor}");
             _board.ClearBoardForWinner( winnerColor);
-            //endgame
+            _alertUI.OnEndGame(winnerColor);
+            _overlay.SetActive(true);
         }
-        _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
-        _turnHUD.text = _turnHUD.text + _colorTurn;
+        else
+        {
+            _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
 
-        _turnHUD.text = "TURN: " + _colorTurn;
-
-        Debug.Log("TURN: " + _colorTurn);
+            _alertUI.OnTurn(_colorTurn);
+            Debug.Log("TURN: " + _colorTurn);
+        }
+       
     }
 
 }
