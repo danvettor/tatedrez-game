@@ -124,7 +124,7 @@ public class GamePresenter : MonoBehaviour
         _currentActiveUI.DeselectUI();
         _boardView.DeselectMoveHighlights();
         _boardView.DeselectTile();
-        _currentPiece = null;
+        _currentPiece = PieceFactory.CreatePiece(PieceType.NONE,PlayerColor.NONE,Vector2Int.one*-1);
     }
     private bool IsValidMove(Vector2Int from, Vector2Int to)
     {

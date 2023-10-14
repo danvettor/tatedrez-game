@@ -31,7 +31,7 @@ public class BoardTests
     }
 
     [Test]
-    public void PieceShouldBeMovedToNewEmptyPositionAndLetPreviousPositionEmpty()
+    public void PieceShouldBeMovedToNewEmptyPosition_AndLetPreviousPositionEmpty()
     {
         var board = new Board();
         board.PlacePiece(new Vector2Int(0, 0), PieceType.BISHOP, PlayerColor.BLACK);
@@ -42,6 +42,30 @@ public class BoardTests
         Assert.AreEqual(board.GetPiece(0, 0).Type, PieceType.NONE);
         Assert.AreEqual(board.GetPiece(0, 1).Type, PieceType.BISHOP);
 
+    }
+
+    [Test]
+    public void HorizontalMovement_MovementShouldBeValid_AsTheresNoPieceInBetweenPositions()
+    {
+        var board = new Board();
+        board.PlacePiece(new Vector2Int(0, 0), PieceType.ROOK, PlayerColor.BLACK);
+
+        var hasPieceInBetween = board.HasPieceInBetween(new Vector2Int(0, 0), new Vector2Int(0, 2));
+
+        Assert.IsFalse(hasPieceInBetween);
+    }
+
+    [Test]
+    public void HorizontalMovement_ShouldNotBeValid_AsTheresPieceInBetweenPositions()
+    {
+        var board = new Board();
+        board.PlacePiece(new Vector2Int(0, 0), PieceType.ROOK, PlayerColor.BLACK);
+        board.PlacePiece(new Vector2Int(0, 1), PieceType.ROOK, PlayerColor.WHITE);
+
+
+        var hasPieceInBetween = board.HasPieceInBetween(new Vector2Int(0, 0), new Vector2Int(0, 2));
+
+        Assert.IsTrue(hasPieceInBetween);
     }
 
 
