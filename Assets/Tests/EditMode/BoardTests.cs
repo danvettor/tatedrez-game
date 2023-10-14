@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 public class BoardTests
 {
-    // A Test behaves as an ordinary method
+    #region Placing Test
     [Test]
     public void PieceShouldBeEqualWherePositioned()
     {
@@ -29,7 +29,8 @@ public class BoardTests
         Assert.AreNotEqual(piece.Type, PieceType.KNIGHT);
 
     }
-
+    #endregion
+    #region Blocking Movement Testing
     [Test]
     public void PieceShouldBeMovedToNewEmptyPosition_AndLetPreviousPositionEmpty()
     {
@@ -68,5 +69,28 @@ public class BoardTests
         Assert.IsTrue(hasPieceInBetween);
     }
 
+    [Test]
+    public void DiagonalMovement_ShouldNotBeValid_AsTheresPieceInBetweenPositions()
+    {
+        var board = new Board();
+        board.PlacePiece(new Vector2Int(0, 0), PieceType.ROOK, PlayerColor.BLACK);
+        board.PlacePiece(new Vector2Int(1, 1), PieceType.ROOK, PlayerColor.WHITE);
 
+
+        var hasPieceInBetween = board.HasPieceInBetween(new Vector2Int(0, 0), new Vector2Int(2, 2));
+
+        Assert.IsTrue(hasPieceInBetween);
+    }
+
+    [Test]
+    public void DiagonalMovement_MovementShouldBeValid_AsTheresNoPieceInBetweenPositions()
+    {
+        var board = new Board();
+        board.PlacePiece(new Vector2Int(0, 0), PieceType.ROOK, PlayerColor.BLACK);
+
+        var hasPieceInBetween = board.HasPieceInBetween(new Vector2Int(0, 0), new Vector2Int(2, 2));
+
+        Assert.IsFalse(hasPieceInBetween);
+    }
+    #endregion
 }
