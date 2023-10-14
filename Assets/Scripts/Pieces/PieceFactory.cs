@@ -8,13 +8,13 @@ public class PieceFactory
         switch (type)
         {
             case PieceType.BISHOP:
-                return new BishopPiece(type, color, pos);
+                return new BishopPiece(color, pos);
             case PieceType.ROOK:
-                return new RookPiece(type, color, pos);
+                return new RookPiece( color, pos);
             case PieceType.KNIGHT:
-                return new KnightPiece(type, color, pos);
+                return new KnightPiece(color, pos);
             default:
-                return null;
+                return new NonePiece(pos);
         }
     }
 }

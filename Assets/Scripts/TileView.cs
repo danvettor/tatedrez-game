@@ -24,7 +24,7 @@ public class TileView : MonoBehaviour
 
     public void Draw(IPiece piece)
     {
-        if (piece == null)
+        if (piece.Type == PieceType.NONE)
         {
             _targetImage.sprite = null;
             _targetImage.color = Color.clear;
@@ -34,6 +34,9 @@ public class TileView : MonoBehaviour
         var pieceTemplate = _availablePieces.Find((p) => p.Type == piece.Type);
         _targetImage.color = Color.white;
         _targetImage.sprite = pieceTemplate.GetSprite(piece.Color);
+       
+            
+        
     }
 
 }

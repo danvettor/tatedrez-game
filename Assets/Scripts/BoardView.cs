@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BoardView : MonoBehaviour
 {
-    [SerializeField] List<Tile> _boardTiles;
+    [SerializeField] List<TileView> _boardTiles;
     [SerializeField] List<Image> _tileHighlights;
     [SerializeField] List<Image> _possibleMovesHighlight;
 

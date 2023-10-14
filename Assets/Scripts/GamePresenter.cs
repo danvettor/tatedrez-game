@@ -61,7 +61,7 @@ public class GamePresenter : MonoBehaviour
         {
             if (!_board.IsEmpty(pos.x, pos.y))
                 return;
-            if (_currentPiece == null)
+            if (_currentPiece.Type == PieceType.NONE)
                 return;
             _board.PlacePiece(pos, _currentPiece.Type, _colorTurn);
             _currentActiveUI.OnPiecePlaced(_currentPiece.Type);
@@ -84,10 +84,10 @@ public class GamePresenter : MonoBehaviour
             }
             _tieCounter = 0;
 
-            if (_currentPiece == null)
+            if (_currentPiece.Type == PieceType.NONE)
             {
                 _currentPiece = _board.GetPiece(pos.x, pos.y);
-                if (_currentPiece == null)
+                if (_currentPiece.Type == PieceType.NONE)
                     return;
 
                 if (_currentPiece.Color == _colorTurn)

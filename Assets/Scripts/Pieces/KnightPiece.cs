@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class KnightPiece: Piece
 {
-    public KnightPiece(PieceType type, PlayerColor color, Vector2Int pos)
+    public KnightPiece(PlayerColor color, Vector2Int pos)
     {
-        Type = type;
+        Type = PieceType.KNIGHT;
         Color = color;
         Pos = pos;
     }

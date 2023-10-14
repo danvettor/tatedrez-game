@@ -4,9 +4,9 @@ using UnityEngine;
 
 public partial class RookPiece : Piece
 {
-    public RookPiece(PieceType type, PlayerColor color, Vector2Int pos)
+    public RookPiece(PlayerColor color, Vector2Int pos)
     {
-        Type = type;
+        Type = PieceType.ROOK;
         Color = color;
         Pos = pos;
     }

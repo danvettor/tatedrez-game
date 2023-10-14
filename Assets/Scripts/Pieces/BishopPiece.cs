@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class BishopPiece : Piece
 {
-    public BishopPiece(PieceType type, PlayerColor color, Vector2Int pos)
+    public BishopPiece(PlayerColor color, Vector2Int pos)
     {
-        Type = type;
+        Type = PieceType.BISHOP;
         Color = color;
         Pos = pos;
     }
