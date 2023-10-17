@@ -16,15 +16,18 @@ public class Board
         Size = 3;
     }
 
-    public void PlacePiece(Vector2Int pos, PieceType type, PlayerColor color)
+    public bool PlacePiece(Vector2Int pos, PieceType type, PlayerColor color)
     {
-        if (IsEmpty(pos.x, pos.y))
+        if (IsEmpty(pos.x, pos.y) && type != PieceType.NONE)
         {
             _piecesOnBoard[pos.x, pos.y] = (int)type;
             _colorsOnBoard[pos.x, pos.y] = (int)color;
-
+            
             OnBoardUpdate?.Invoke(this);
+
+            return true;
         }
+        return false;
     }
 
     public void MovePiece(IPiece piece, Vector2Int to)

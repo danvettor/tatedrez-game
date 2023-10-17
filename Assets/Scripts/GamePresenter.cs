@@ -16,14 +16,16 @@ public class GamePresenter : MonoBehaviour
 
     private PlayerUI _currentActiveUI;
 
+    private Player _blackPlayer;
+    private Player _whitePlayer;
+    private Player _currentPlayer;
+
     private int _tieCounter;
-
-    //gamecontroller
     private PlayerColor _colorTurn;
-    private GameState _currentState;
+    private GamePhase _currentGamePhase;
 
 
-    IPiece _currentPiece;
+    IPiece _selectedPiece;
 
     private void Awake()
     {
@@ -31,13 +33,16 @@ public class GamePresenter : MonoBehaviour
 
         _blackUI.OnPieceSelected = (type) => OnSelectedPiece(type, _blackUI.PlayerColor);
         _whiteUI.OnPieceSelected = (type) => OnSelectedPiece(type, _whiteUI.PlayerColor);
+        _blackPlayer = new Player(PlayerColor.BLACK);
+        _whitePlayer = new Player(PlayerColor.WHITE);
 
         StartNewGame();
     }
     private void StartNewGame()
     {
         _colorTurn = PlayerColor.WHITE;
-        _currentState = GameState.PLACE_PIECES;
+        _currentPlayer = _whitePlayer;
+        _currentGamePhase = GamePhase.PLACE_PIECES;
         _currentActiveUI = _whiteUI;
         _boardView.CreateInitialBoard(_board, onTileClicked: Play);
         _alertUI.OnTurn(_colorTurn);
@@ -47,8 +52,8 @@ public class GamePresenter : MonoBehaviour
     {
         if (color == _colorTurn)
         {
-            _currentPiece = PieceFactory.CreatePiece(typeSelected, color, Vector2Int.one * -1);
-            _currentActiveUI.HighlightUI(_currentPiece.Type);
+            _selectedPiece = PieceFactory.CreatePiece(typeSelected, color, Vector2Int.one * -1);
+            _currentActiveUI.HighlightUI(_selectedPiece.Type);
         }
         else
         {
@@ -57,80 +62,89 @@ public class GamePresenter : MonoBehaviour
     }
     public void Play(Vector2Int pos)
     {
-        if (_currentState == GameState.PLACE_PIECES)
+        if (_currentGamePhase == GamePhase.PLACE_PIECES)
+            PlacePiecePlay(pos);
+        else if (_currentGamePhase == GamePhase.DYNAMIC)
+            DynamicPlay(pos);
+    }
+
+    private void PlacePiecePlay(Vector2Int pos)
+    {
+        var isPiecePlaced = _board.PlacePiece(pos, _selectedPiece.Type, _colorTurn);
+
+        if (isPiecePlaced)
         {
-            if (!_board.IsEmpty(pos.x, pos.y))
-                return;
-            if (_currentPiece.Type == PieceType.NONE)
-                return;
-            _board.PlacePiece(pos, _currentPiece.Type, _colorTurn);
-            _currentActiveUI.OnPiecePlaced(_currentPiece.Type);
+            //WIP: refactoring to change UI to a controller/presenter player class
+            _currentActiveUI.OnPiecePlaced(_selectedPiece.Type);
+            _currentPlayer.OnPiecePlaced(_selectedPiece.Type);
             if (!_blackUI.HasPieceToPlace && !_whiteUI.HasPieceToPlace)
             {
-                _currentState = GameState.DYNAMIC;
+                _currentGamePhase = GamePhase.DYNAMIC;
                 ResetPieceSelection();
             }
             ResetPieceSelection();
             Turn();
         }
-        else if (_currentState == GameState.DYNAMIC)
+
+    }
+
+    private void DynamicPlay(Vector2Int pos)
+    {
+        //TODO: Check if there any move for the currentPlayer
+        if (!_board.HasValidMove(_colorTurn))
         {
-            //TODO: Check if there any move for the currentPlayer
-            if (!_board.HasValidMove(_colorTurn))
-            {
-                _tieCounter++;
-                Turn();
+            _tieCounter++;
+            Turn();
+            return;
+        }
+        _tieCounter = 0;
+
+        if (_selectedPiece.Type == PieceType.NONE)
+        {
+            _selectedPiece = _board.GetPiece(pos.x, pos.y);
+            if (_selectedPiece.Type == PieceType.NONE)
                 return;
-            }
-            _tieCounter = 0;
 
-            if (_currentPiece.Type == PieceType.NONE)
+            if (_selectedPiece.Color == _colorTurn)
             {
-                _currentPiece = _board.GetPiece(pos.x, pos.y);
-                if (_currentPiece.Type == PieceType.NONE)
-                    return;
+                var validMoves = _board.ValidMoves(_selectedPiece);
+                _boardView.HighlightPossibleMoves(validMoves);
+                _boardView.HighlightTile(_selectedPiece.Pos);
+            }
+            else
+                ResetPieceSelection();
 
-                if (_currentPiece.Color == _colorTurn)
-                {
-                    var validMoves = _board.ValidMoves(_currentPiece);
-                    _boardView.HighlightPossibleMoves(validMoves);
-                    _boardView.HighlightTile(_currentPiece.Pos);
-                }
-                else
-                    ResetPieceSelection();
-
+        }
+        else
+        {
+            if (IsValidMove(from: _selectedPiece.Pos, to: pos))
+            {
+                //check for winner
+                _board.MovePiece(_selectedPiece, pos);
+                Debug.Log($"VALID MOVE FROM {_selectedPiece.Color} {_selectedPiece.Type}!!");
+                ResetPieceSelection();
+                Turn();
             }
             else
             {
-                if (IsValidMove(from: _currentPiece.Pos, to: pos))
-                {
-                    //check for winner
-                    _board.MovePiece(_currentPiece, pos);
-                    Debug.Log($"VALID MOVE FROM {_currentPiece.Color} {_currentPiece.Type}!!");
-                    ResetPieceSelection();
-                    Turn();
-                }
-                else
-                {
-                    ResetPieceSelection();
-                }
+                ResetPieceSelection();
             }
-
         }
     }
+
 
     private void ResetPieceSelection()
     {
         _currentActiveUI.DeselectUI();
         _boardView.DeselectMoveHighlights();
         _boardView.DeselectTile();
-        _currentPiece = PieceFactory.CreatePiece(PieceType.NONE,PlayerColor.NONE,Vector2Int.one*-1);
+        _selectedPiece = PieceFactory.CreatePiece(PieceType.NONE,PlayerColor.NONE,Vector2Int.one*-1);
     }
     private bool IsValidMove(Vector2Int from, Vector2Int to)
     {
         return _board.IsEmpty(to.x, to.y) &&
                 !_board.HasPieceInBetween(from, to) &&
-                _currentPiece.IsValidMove(to);
+                _selectedPiece.IsValidMove(to);
     }
 
     private void Turn()
@@ -157,6 +171,8 @@ public class GamePresenter : MonoBehaviour
         {
             _colorTurn = _colorTurn == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
             _currentActiveUI = _colorTurn == PlayerColor.BLACK ? _blackUI : _whiteUI;
+            _currentPlayer = _colorTurn == PlayerColor.BLACK ? _blackPlayer : _whitePlayer;
+
             _alertUI.OnTurn(_colorTurn);
             Debug.Log("TURN: " + _colorTurn);
         }
